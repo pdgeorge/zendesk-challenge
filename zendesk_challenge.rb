@@ -55,30 +55,20 @@ def search_ticket(all)
   case choice
   when 1
     search_string(all, "subject")
+  when 2
+    search_string(all, "description")
+  when 3
+    search_string(all, "tags")
+  when 4
+    search_integer(all, "requester_id")
+  when 5
+    search_integer(all, "assignee_id")
   end
 end
 
-def search_integer(all, specific)
-  puts("Tell me what you want to find please")
-  STDOUT.flush
-  search = gets.chomp.to_i
-  for i in 0...all["tickets"].length
-    puts(all["tickets"][i][specific])
-    puts(all["tickets"][i][specific]) if all["tickets"][i][specific] == search
-  end
-end
-
-def search_string(all, specific)
-  puts("Tell me what you want to find please")
-  STDOUT.flush
-  search = gets.chomp
+def print_results(results, search, specific)
   found = 0
-  found_tickets = Array.new()
-  for i in 0...all["tickets"].length
-    found_ticket = all["tickets"][i] if all["tickets"][i][specific].include? search
-    found_tickets << found_ticket
-  end
-  found_tickets.each do |i|
+  results.each do |i|
     puts("#{search} was found in the #{specific} of the following ticket:")
     puts("ID is: #{i["id"].to_s}")
     puts("Subject is: #{i["subject"]}")
@@ -89,25 +79,54 @@ def search_string(all, specific)
   end
 end
 
+def search_integer(all, specific)
+  puts(all["tickets"][20][specific])
+  puts("Tell me what you want to find please")
+  STDOUT.flush
+  search = gets.chomp
+  found_tickets = Array.new()
+  for i in 0...all["tickets"].length
+    found_tickets << all["tickets"][i] if all["tickets"][i][specific] == search.to_i
+  end
+  print_results(found_tickets, search, specific)
+end
+
+def search_string(all, specific)
+  puts("Tell me what you want to find please")
+  STDOUT.flush
+  search = gets.chomp
+  found = 0
+  found_tickets = Array.new()
+  for i in 0...all["tickets"].length
+    found_tickets << all["tickets"][i] if all["tickets"][i][specific].include? search
+  end
+  print_results(found_tickets, search, specific)
+end
+
 
 def main_menu()
   tickets = read_tickets()
   parsed = JSON.parse(tickets.body)
   begin
-    puts("Please make a choice between 1 and 3")
-    puts("Enter 1 to view all tickets.")
-    puts("Enter 2 to search tickets")
-    STDOUT.flush
-    choice = gets.chomp().to_i
-  end while (!(1..2).member?(choice))
-  case choice
-  when 1
-    display_all(parsed)
-  when 2
-    search_ticket(parsed)
-  else
-    puts("How did you get here?")
-  end
+    begin
+      puts("Please make a choice between 1 and 3")
+      puts("Enter 1 to view all tickets.")
+      puts("Enter 2 to search tickets")
+      puts("Enter 3 to quit")
+      STDOUT.flush
+      choice = gets.chomp().to_i
+    end while (!(1..3).member?(choice))
+    case choice
+    when 1
+      display_all(parsed)
+    when 2
+      search_ticket(parsed)
+    when 3
+      break
+    else
+      puts("How did you get here?")
+    end
+  end until false
 end
 
 def main()
