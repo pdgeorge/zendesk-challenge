@@ -24,9 +24,10 @@ def display_all(all)
       puts("The ID of the #{i}th item is: #{all["tickets"][i]["id"]}")
       puts("The Subject of the #{i}th item is: #{all["tickets"][i]["subject"]}")
     if(i%25 == 0 && i != 0)
-      puts("======================================================================================")
+      puts("================================================================================")
       puts("Press Enter To Get The Next Page Of 25")
-      puts("======================================================================================")
+      puts("================================================================================")
+      STDOUT.flush
       gets()
     end
   end
@@ -44,21 +45,34 @@ def search_ticket(all)
     puts("Enter 3 to search tags.")
     puts("Enter 4 to search requester id.")
     puts("Enter 5 to search assignee id.")
+    STDOUT.flush
     choice = gets.chomp().to_i
   end while (!(1..5).member?(choice))
   case choice
   when 1
-    search_specific(all, "")
+    search_string(all, "description")
   end
 end
 
-def search_specific(all, specific)
+def search_integer(all, specific)
   puts("Tell me what you want to find please")
+  STDOUT.flush
   search = gets.chomp.to_i
   for i in 0...all["tickets"].length
-    puts("BUTTS")
     puts(all["tickets"][i][specific])
     puts(all["tickets"][i][specific]) if all["tickets"][i][specific] == search
+  end
+end
+
+def search_string(all, specific)
+  puts("Tell me what you want to find please")
+  STDOUT.flush
+  search = gets.chomp
+  for i in 0...all["tickets"].length
+    # puts(all["tickets"][i][specific])
+    puts(all["tickets"][i][specific]) if all["tickets"][i][specific].include? search
+    puts(all["tickets"][i]["subject"]) if all["tickets"][i][specific].include? search
+    puts("================================================================================") if all["tickets"][i][specific].include? search
   end
 end
 
@@ -71,6 +85,7 @@ def main_menu()
     puts("Enter 1 to view all tickets.")
     puts("Enter 2 to view a specific ticket")
     puts("Enter 3 to search tickets")
+    STDOUT.flush
     choice = gets.chomp().to_i
   end while (!(1..3).member?(choice))
   case choice
