@@ -1,0 +1,12 @@
+Ensure the correct credentials are utilised at the top of the file.
+
+Ruby needs to be installed and able to run code
+
+There is no required gems, net/http and json are both default gems for Ruby.
+I did regular testing, which allowed me to find errors like the "print entry 0 one hundred times" error mentioned in notes.
+It also allowed me to find the loop difference between msys and Powershell as well as find a fix. This is also mentioned in notes.
+
+Usage should be fairly straight forward:
+1) All information stored as constants at the top of file. IE: URL, username/email, password used for this account
+1A) (I had considered requiring manually entering the information, however the code-review team will be reviewing dozens of submitters code. While this method is less secure, it will make the reviewers life easier. This method also allows for easy changing of the information as is needed)
+2) Follow the menu options. If numbers outside of requested options are entered, it will re-prompt.

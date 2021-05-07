@@ -1,5 +1,10 @@
+Loops with 'gets' within them react differently in mingw/msys/etc. vs Powershell.
+In Powershell, they work as you would expect, however in msys they store the buffer until after the user has made all inputs.
+This is the reason for the STDOUT.flush inclusions. This is also mentioned in the Github push.
+
 Bulk pushed data had requester_id and assignee_id overwritten when pulled.
 Weird note: When searching via search_integer, priority appears, however when searching via search_string, priority appears as nul. Despite using the same print_results method.
+Ignore above note: That was my sleep deprived brain unable to recognise it was printing entry 0, one hundred times.
 
 Full JSON data:
 url, id, external_id, via (channel, source(from/to), rel) created_at, updated_at, type, subject, raw_subject, description, priority, status, recipient, requester_id, submitter_id, assignee_id, organization_id, group_id, collaborator_ids, follower_ids, email_cc_ids, forum_topic_id, problem_id, has_incidents, is_public, due_at, tags, custom_fields, satisfaction_rating, sharing_agreement_ids, fields, followup_ids, ticket_form_id, brand_id, allow_channelback
