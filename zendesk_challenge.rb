@@ -1,3 +1,4 @@
+require 'test/unit'
 require 'net/http'
 require 'json'
 # RIJjudcDGcIB2uxvcyywsG2AISGVZLrZOJRWjScc API TOKEN NOT TO LOSE
@@ -5,6 +6,12 @@ require 'json'
 EMAIL = 'pdgeorge.geekpride@gmail.com'
 PASSWORD = 'Zendeskwolf236'
 URL = 'https://pdsworkshop.zendesk.com/api/v2/tickets.json'
+
+def class_check(var, variable_name, class_type)
+  if(!variable_name.is_a?(class_type))
+    raise("Variable #{var} expected #{class_type} class type.")
+  end
+end
 
 def read_tickets
   uri = URI(URL)
@@ -19,6 +26,8 @@ def read_tickets
 end
 
 def pager(x)
+  class_check("x in pager", x, Integer)
+
   if(x % 25 == 0 && x != 0)
     puts("================================================================================")
     puts("Press Enter To Get The Next Page Of 25")
@@ -29,44 +38,49 @@ def pager(x)
 end
 
 def display_all(all)
+  class_check("all in display_all", all, Hash)
+
   i = 0
   continue = 0
   for i in 0...all["tickets"].length
-      puts("The ID of the #{i}th item is: #{all["tickets"][i]["id"]}")
-      puts("The Subject of the #{i}th item is: #{all["tickets"][i]["subject"]}")
-      puts("The priority of the #{i}th item is: #{all["tickets"][i]["priority"]}")
+    puts("The ID of the #{i}th item is: #{all["tickets"][i]["id"]}")
+    puts("The Subject of the #{i}th item is: #{all["tickets"][i]["subject"]}")
+    puts("The priority of the #{i}th item is: #{all["tickets"][i]["priority"]}")
     pager(i)
   end
 end
 
 def search_ticket(all)
+  class_check("all in search_ticket", all, Hash)
+
   begin
     puts("Please make a choice between 1 and 5")
     puts("* Enter 1 to search subjects.")
     puts("* Enter 2 to search descriptions.")
-    puts("* Enter 3 to search tags.")
-    puts("* Enter 4 to search requester id.")
-    puts("* Enter 5 to search assignee id.")
+    puts("* Enter 3 to search requester id.")
+    puts("* Enter 4 to search assignee id.")
     STDOUT.flush
     choice = gets.chomp.to_i
-  end while (!(1..5).member?(choice))
+  end while (!(1..4).member?(choice))
   case choice
   when 1
     search_string(all, "subject")
   when 2
     search_string(all, "description")
   when 3
-    search_string(all, "tags")
-  when 4
-    puts("An example requester id to use: #{all["tickets"][20]["requester_id"]}")
+    puts("An example requester id to use: #{all["tickets"][0]["requester_id"]}")
     search_integer(all, "requester_id")
-  when 5
-    puts("An example assignee id to use: #{all["tickets"][20]["assignee_id"]}")
+  when 4
+    puts("An example assignee id to use: #{all["tickets"][0]["assignee_id"]}")
     search_integer(all, "assignee_id")
   end
 end
 
 def print_results(results, search, specific)
+  class_check("results in print_results", results, Array)
+  class_check("search in print_results", search, String)
+  class_check("specific in search_string", specific, String)
+
   found = 0
   results.each do |i|
     puts("#{search} was found in the #{specific} of the following ticket:")
@@ -80,6 +94,8 @@ def print_results(results, search, specific)
 end
 
 def print_detailed(ticket)
+  class_check("ticket in print_detailed", ticket, Hash)
+
   puts("================================================================================")
   puts("ID is: #{ticket["id"].to_s}")
   puts("Requester id is: #{ticket["requester_id"].to_s}")
@@ -92,6 +108,9 @@ def print_detailed(ticket)
 end
 
 def search_integer(all, specific)
+  class_check("all in search_string", all, Hash)
+  class_check("specific in search_integer", specific, String)
+
   puts("Tell me what you want to find please:")
   STDOUT.flush
   search = gets.chomp
@@ -104,6 +123,9 @@ def search_integer(all, specific)
 end
 
 def search_string(all, specific)
+  class_check("all in search_string", all, Hash)
+  class_check("specific in search_string", specific, String)
+
   puts("Tell me what you want to find please:")
   STDOUT.flush
   search = gets.chomp
@@ -117,6 +139,7 @@ def search_string(all, specific)
 end
 
 def search_id(all)
+  class_check("all in search_id", all, Hash)
   puts("Which ID would you like to find?")
   STDOUT.flush
   search = gets.chomp
@@ -131,6 +154,7 @@ def search_id(all)
 end
 
 def main_menu(parsed_tickets)
+  class_check("parsed_tickets in main_menu", parsed_tickets, Hash)
   begin
     puts("\nWelcome to the ticket viewer!")
     begin
