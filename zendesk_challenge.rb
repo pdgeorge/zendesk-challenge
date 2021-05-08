@@ -3,8 +3,7 @@ require 'net/http'
 require 'json'
 # RIJjudcDGcIB2uxvcyywsG2AISGVZLrZOJRWjScc API TOKEN NOT TO LOSE
 # API Token was sadly not useful when using net/http library
-EMAIL = 'pdgeorge.geekpride@gmail.com'
-PASSWORD = 'Zendeskwolf236'
+
 URL = 'https://pdsworkshop.zendesk.com/api/v2/tickets.json'
 
 def class_check(var, variable_name, class_type)
@@ -16,8 +15,15 @@ end
 def read_tickets
   uri = URI(URL)
 
+  puts("Please enter the user email (pdgeorge.geekpride@gmail.com)")
+  STDOUT.flush
+  email = gets.chomp
+  puts("Please enter the user password (supplied in email)")
+  STDOUT.flush
+  password = gets.chomp
+
   request = Net::HTTP::Get.new(uri)
-  request.basic_auth EMAIL, PASSWORD
+  request.basic_auth email, password
 
   response = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == "https", :verify_mode => OpenSSL::SSL::VERIFY_NONE) {|http|
     http.request(request)
@@ -198,7 +204,10 @@ def error_check
     puts("An error has occured.")
     puts("Error received: #{parsed["error"]}")
     puts("HTTP code received: #{tickets.code}")
-    puts("Please read the error codes above and respond accordingly.")
+    if (parsed["error"].include? "authenticate")
+      puts("* Please ensure you have entered the email and password correctly.")
+      puts("* If you are certain you entered the correct credentials, please ensure you have enabled password authentication and you did not make 2FA a requirement")
+    end
     puts("When you are ready to exit the program, please press enter.")
     STDOUT.flush
     gets
