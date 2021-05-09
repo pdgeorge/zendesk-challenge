@@ -1,6 +1,8 @@
 require 'test/unit'
 require 'net/http'
 require 'json'
+require 'openssl'
+require 'base64'
 # RIJjudcDGcIB2uxvcyywsG2AISGVZLrZOJRWjScc API TOKEN NOT TO LOSE
 # API Token was sadly not useful when using net/http library
 
@@ -12,18 +14,49 @@ def class_check(var, variable_name, class_type)
   end
 end
 
-def read_tickets
-  uri = URI(URL)
+def decryption(encoded)
+  private_key_file = 'private.pem';
 
-  puts("Please enter the user email (pdgeorge.geekpride@gmail.com)")
-  STDOUT.flush
-  email = gets.chomp
-  puts("Please enter the user password (supplied in email)")
-  STDOUT.flush
-  password = gets.chomp
+  private_key = OpenSSL::PKey::RSA.new(File.read(private_key_file))
+  string = private_key.private_decrypt(Base64.decode64(encoded)).chomp
+  return string
+end
+
+def enter_credentials()
+  begin
+    puts("Have you placed supplied 'private.pem' in the same folder as zendesk_challenge.rb or do you want to enter the credentials yourself?")
+    puts("* 1. I have placed 'private.pem' inside the same folder as zendesk_challenge.rb.")
+    puts("* 2. I would like to enter the credentials myself.")
+    STDOUT.flush
+    choice = gets.chomp.to_i
+  end while(!(1..2).member?(choice))
+  if(choice == 1)
+    file_data = File.read("credentials.txt").split
+    email = file_data[0]
+    password = decryption(file_data[1])
+    credentials = Array.new
+    credentials << email
+    credentials << password
+    return credentials
+  else
+    puts("Please enter the user email (pdgeorge.geekpride@gmail.com)")
+    STDOUT.flush
+    email = gets.chomp
+    puts("Please enter the user password (supplied in email)")
+    STDOUT.flush
+    password = gets.chomp
+    credentials = Array.new
+    credentials << email
+    credentials << password
+    return credentials
+  end
+end
+
+def read_tickets(url, credentials)
+  uri = URI(url)
 
   request = Net::HTTP::Get.new(uri)
-  request.basic_auth email, password
+  request.basic_auth credentials[0], credentials[1]
 
   response = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == "https", :verify_mode => OpenSSL::SSL::VERIFY_NONE) {|http|
     http.request(request)
@@ -51,7 +84,6 @@ def display_all(all)
   for i in 0...all["tickets"].length
     puts("The ID of the #{i}th item is: #{all["tickets"][i]["id"]}")
     puts("The Subject of the #{i}th item is: #{all["tickets"][i]["subject"]}")
-    puts("The priority of the #{i}th item is: #{all["tickets"][i]["priority"]}")
     pager(i)
   end
 end
@@ -188,10 +220,32 @@ def main_menu(parsed_tickets)
   end until false
 end
 
+def import_tickets
+  credentials = enter_credentials
+  tickets = read_tickets(URL, credentials)
+  parsed = JSON.parse(tickets.body)
+  pages = 2
+  if(parsed["tickets"].length == 100)
+    to_concatonate = read_tickets(URL+"?page=" + pages.to_s, credentials)
+    to_concatonate_parsed = JSON.parse(to_concatonate.body)
+    to_concatonate_parsed["tickets"].each do |i|
+      parsed["tickets"].append(i)
+    end
+  end
+  while(to_concatonate_parsed["tickets"].length == 100) # Checks if there is 3+ pages. Theoretical at the moment since unable to test.
+    pages += 1
+    to_concatonate = read_tickets(URL+"?page=" + pages.to_s, credentials)
+    to_concatonate_parsed = JSON.parse(to_concatonate.body)
+    to_concatonate_parsed["tickets"].each do |i|
+      parsed["tickets"].append(i)
+    end
+  end
+  return parsed
+end
+
 def error_check
   begin
-    tickets = read_tickets
-    parsed = JSON.parse(tickets.body)
+    parsed = import_tickets
   rescue
     puts("Unable to connect to Zendesk.com.\nPlease ensure the URL is entered correctly, internet access is available and there is no maintanance being performed on Zendesk online functionality before trying again.")
     puts("When you are ready to exit the program, please press enter.")
