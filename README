@@ -4,7 +4,7 @@ Ensure using the password supplied in the email received from Michael George
 
 Ruby needs to be installed and able to run.
 
-There is no required gems. test/unit, net/http, json, openssl and base64 are all default gems for Ruby.
+There is no required gems to install. test/unit, net/http, json, openssl and base64 are all default gems for Ruby.
 
 I did regular testing, which allowed me to find errors like the "print entry 0 one hundred times" error mentioned in notes.
 It also allowed me to find the loop difference between msys and Powershell as well as find a fix. This is also mentioned in notes.
