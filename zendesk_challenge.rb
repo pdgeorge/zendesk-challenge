@@ -22,6 +22,29 @@ def decryption(encoded)
   return string
 end
 
+def from_file
+  file_data = File.read("credentials.txt").split
+  email = file_data[0]
+  password = decryption(file_data[1])
+  credentials = Array.new
+  credentials << email
+  credentials << password
+  return credentials
+end
+
+def user_entered
+  puts("Please enter the user email (pdgeorge.geekpride@gmail.com)")
+  STDOUT.flush
+  email = gets.chomp
+  puts("Please enter the user password (supplied in email)")
+  STDOUT.flush
+  password = gets.chomp
+  credentials = Array.new
+  credentials << email
+  credentials << password
+  return credentials
+end
+
 def enter_credentials()
   begin
     puts("Have you placed supplied 'private.pem' in the same folder as zendesk_challenge.rb or do you want to enter the credentials yourself?")
@@ -31,23 +54,10 @@ def enter_credentials()
     choice = gets.chomp.to_i
   end while(!(1..2).member?(choice))
   if(choice == 1)
-    file_data = File.read("credentials.txt").split
-    email = file_data[0]
-    password = decryption(file_data[1])
-    credentials = Array.new
-    credentials << email
-    credentials << password
+    credentials = from_file
     return credentials
   else
-    puts("Please enter the user email (pdgeorge.geekpride@gmail.com)")
-    STDOUT.flush
-    email = gets.chomp
-    puts("Please enter the user password (supplied in email)")
-    STDOUT.flush
-    password = gets.chomp
-    credentials = Array.new
-    credentials << email
-    credentials << password
+    credentials = user_entered
     return credentials
   end
 end
