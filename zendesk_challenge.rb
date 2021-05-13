@@ -3,7 +3,6 @@ require 'net/http'
 require 'json'
 require 'openssl'
 require 'base64'
-# RIJjudcDGcIB2uxvcyywsG2AISGVZLrZOJRWjScc API TOKEN NOT TO LOSE
 # API Token was sadly not useful when using net/http library
 
 # The URL for the tickets. Change if targetting a different zendesk account
