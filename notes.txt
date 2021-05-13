@@ -9,6 +9,8 @@ When considering the most effective pagination method, first and foremost consid
 Primary reason: If there is 200 tickets, at 25 tickets per request, that is 8 requests versus 2 requests if pulling all at once (100 tickets per pull). This is a lower load on all concerned, the server and client.
 Final decision: All tickets requested and stored on program launch to allow smooth running for the rest of the program.
 
+Need to be even more mindful of security related issues in the future, such as passwords, API tokens etc. when pushing to a *public* Github.
+
 Happy path tests throughout, testing that the correct class type is being passed through, which ensures the program is doing everything as it is supposed to.
 
 Reminder to self:
