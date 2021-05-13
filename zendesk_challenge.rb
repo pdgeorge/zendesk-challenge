@@ -6,14 +6,18 @@ require 'base64'
 # RIJjudcDGcIB2uxvcyywsG2AISGVZLrZOJRWjScc API TOKEN NOT TO LOSE
 # API Token was sadly not useful when using net/http library
 
+# The URL for the tickets. Change if targetting a different zendesk account
+# If this is changed, from_file will no longer work.
 URL = 'https://pdsworkshop.zendesk.com/api/v2/tickets.json'
 
+# Majority of tests were very similar. Created custom test to increase modularity
 def class_check(var, variable_name, class_type)
   if(!variable_name.is_a?(class_type))
     raise("Variable #{var} expected #{class_type} class type.")
   end
 end
 
+# For decrypting the password
 def decryption(encoded)
   private_key_file = 'private.pem';
 
@@ -22,6 +26,7 @@ def decryption(encoded)
   return string
 end
 
+# Called if the user wishes to read credentials from file
 def from_file
   file_data = File.read("credentials.txt").split
   email = file_data[0]
@@ -32,6 +37,7 @@ def from_file
   return credentials
 end
 
+# Called if the user wishes to enter the credentials themselves
 def user_entered
   puts("Please enter the user email (pdgeorge.geekpride@gmail.com)")
   STDOUT.flush
@@ -45,7 +51,8 @@ def user_entered
   return credentials
 end
 
-def enter_credentials()
+# Asks the user how they want to enter their credentials, then takes these credentials and returns them
+def enter_credentials
   begin
     puts("Have you placed supplied 'private.pem' in the same folder as zendesk_challenge.rb or do you want to enter the credentials yourself?")
     puts("* 1. I have placed 'private.pem' inside the same folder as zendesk_challenge.rb.")
@@ -62,6 +69,7 @@ def enter_credentials()
   end
 end
 
+# Makes primary request for information from API and returns result
 def read_tickets(url, credentials)
   uri = URI(url)
 
@@ -74,6 +82,8 @@ def read_tickets(url, credentials)
   return response
 end
 
+# Used for pagination, checks if there has been 25 elements
+# If yes, prints the barrier and makes a pause to wait for user input
 def pager(x)
   class_check("x in pager", x, Integer)
 
@@ -86,6 +96,7 @@ def pager(x)
   end
 end
 
+# Displays minimal information of all tickets of hash passed
 def display_all(all)
   class_check("all in display_all", all, Hash)
 
@@ -98,6 +109,7 @@ def display_all(all)
   end
 end
 
+# Small menu to allow user to search through tickets for key words, or ids
 def search_ticket(all)
   class_check("all in search_ticket", all, Hash)
 
@@ -124,6 +136,7 @@ def search_ticket(all)
   end
 end
 
+# Displays search results
 def print_results(results, search, specific)
   class_check("results in print_results", results, Array)
   class_check("search in print_results", search, String)
@@ -141,6 +154,7 @@ def print_results(results, search, specific)
   end
 end
 
+# Prints detailed information about a single ticket
 def print_detailed(ticket)
   class_check("ticket in print_detailed", ticket, Hash)
 
@@ -155,6 +169,7 @@ def print_detailed(ticket)
   puts("================================================================================")
 end
 
+# Used to search ticket elements which are integers
 def search_integer(all, specific)
   class_check("all in search_string", all, Hash)
   class_check("specific in search_integer", specific, String)
@@ -170,6 +185,7 @@ def search_integer(all, specific)
   print_results(found_tickets, search, specific)
 end
 
+# Used to search ticket elements which are strings
 def search_string(all, specific)
   class_check("all in search_string", all, Hash)
   class_check("specific in search_string", specific, String)
@@ -186,6 +202,7 @@ def search_string(all, specific)
   print_results(found_tickets, search, specific)
 end
 
+# Used to search tickets by id
 def search_id(all)
   class_check("all in search_id", all, Hash)
   puts("Which ID would you like to find?")
@@ -201,6 +218,7 @@ def search_id(all)
   puts("Unable to find #{search}.") if found == false
 end
 
+# Used to display the main menu
 def main_menu(parsed_tickets)
   class_check("parsed_tickets in main_menu", parsed_tickets, Hash)
   begin
@@ -230,6 +248,8 @@ def main_menu(parsed_tickets)
   end until false
 end
 
+# Import all of the tickets
+# First page of 100 as well as checking if there are any additional pages and importing them as well
 def import_tickets
   credentials = enter_credentials
   tickets = read_tickets(URL, credentials)
@@ -253,6 +273,7 @@ def import_tickets
   return parsed
 end
 
+# Error protection against poorly entered user credentials, no internet access as well as down API
 def error_check
   begin
     parsed = import_tickets
