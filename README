@@ -2,6 +2,16 @@ Instructions for proper usage of this program:
 Ensure the correct credentials are utilised at the top of the file.
 Ensure using the password supplied in the email received from Michael George
 
+==========
+Note: Contacted Zendesk help for extending trial account for Pdsworkshop, however didn't receive a reply about whether an extention would occur or not.
+Trial for pdsworkshop.zendesk.com might not have been extended by the time the program is tested.
+THESE STEPS ARE ONLY FOR IF THE TRIAL FOR pdsworkshop.zendesk.com HAS NOT BEEN EXTENDED!
+==========
+Please change the URL on line 10 of zendesk_challenge.rb to an account which is known to work, and use option 2 when asked for credentials.
+When entering email/password, use the email and password which match the account for the new URL.
+The application has only been tested on pdsworkshop.zendesk.com .
+===========
+
 Ruby needs to be installed and able to run.
 
 There is no required gems to install. test/unit, net/http, json, openssl and base64 are all default gems for Ruby.
