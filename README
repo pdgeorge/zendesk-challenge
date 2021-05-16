@@ -2,6 +2,22 @@ Instructions for proper usage of this program:
 Ensure the correct credentials are utilised at the top of the file.
 Ensure using the password supplied in the email received from Michael George
 
+Ruby needs to be installed and able to run.
+
+There is no required gems to install. test/unit, net/http, json, openssl and base64 are all default gems for Ruby.
+
+I did regular testing, which allowed me to find errors like the "print entry 0 one hundred times" error mentioned in notes.
+It also allowed me to find the loop difference between msys and Powershell as well as find a fix. This is also mentioned in notes.
+In my testing, I *believe* I put in proper testing, however I am still new to unit testing and know I have a lot to learn.
+This was my first real exploration in to a number of these areas, so it was a great learning opportunity so far and I would love to learn more.
+
+The addition of password saving etc. was not intended as an extra feature, more an attempt to make life easier for the code reviewer.
+
+Usage should be fairly straight forward:
+1) Ensure all files are downloaded and placed in the same folder. The most crucial files are: "zendesk_challenge.rb" "private.pem" and "credentials.txt"
+2) User chooses to either allow the program to load from stored credentials, or the user can choose to enter the credentials themselves if the credentials load incorrectly.
+3) Follow the menu options. If numbers outside of requested options are entered, it will re-prompt.
+
 ==========
 Note: Contacted Zendesk help for extending trial account for Pdsworkshop, however didn't receive a reply about whether an extention would occur or not.
 Trial for pdsworkshop.zendesk.com might not have been extended by the time the program is tested.
@@ -11,19 +27,3 @@ Please change the URL on line 10 of zendesk_challenge.rb to an account which is 
 When entering email/password, use the email and password which match the account for the new URL.
 The application has only been tested on pdsworkshop.zendesk.com .
 ===========
-
-Ruby needs to be installed and able to run.
-
-There is no required gems to install. test/unit, net/http, json, openssl and base64 are all default gems for Ruby.
-
-I did regular testing, which allowed me to find errors like the "print entry 0 one hundred times" error mentioned in notes.
-It also allowed me to find the loop difference between msys and Powershell as well as find a fix. This is also mentioned in notes.
-In my testing, I *believe* I put in proper testing, however I am still new to unit testing and know I have a lot to learn.
-This was my first real exploration in to a number of these areas, so it was a great learning opportunity so far.
-
-The addition of password saving etc. was not intended as an extra feature, more an attempt to make life easier for the code reviewer.
-
-Usage should be fairly straight forward:
-1) Ensure all files are downloaded and placed in the same folder. The most crucial files are: "zendesk_challenge.rb" "private.pem" and "credentials.txt"
-2) User chooses to either allow the program to load from stored credentials, or the user can choose to enter the credentials themselves if the credentials load incorrectly.
-3) Follow the menu options. If numbers outside of requested options are entered, it will re-prompt.
