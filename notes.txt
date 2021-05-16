@@ -9,15 +9,21 @@ When considering the most effective pagination method, first and foremost consid
 Primary reason: If there is 200 tickets, at 25 tickets per request, that is 8 requests versus 2 requests if pulling all at once (100 tickets per pull). This is a lower load on all concerned, the server and client.
 Final decision: All tickets requested and stored on program launch to allow smooth running for the rest of the program.
 
-Need to be even more mindful of security related issues in the future, such as passwords, API tokens etc. when pushing to a *public* Github.
+I did regular testing of the program, regularly running it to find errors, which is how I found the before mentioned discrepency between how different terminals handle inputs.
+I *believe* I put in proper testing throughout to account for errors, however I am still new to unit testing and know I have a lot to learn and would greatly benefit from the opportunity.
+
+The usage of the net/http library was chosen primarily because it was a pre-installed gem. It was not difficult to get working.
+The test/unit gem was required to do any form of testing. The json gem was required to process json data and the openssl and base64 gems were required to decrypt passwords.
+
+In the future I need to be even more mindful of security related issues in the future, such as passwords, API tokens etc. when pushing to a *public* Github.
 
 Happy path tests throughout, testing that the correct class type is being passed through, which ensures the program is doing everything as it is supposed to.
 
 Reminder to self:
-Create a private key
+- Create a private key
 openssl genrsa -out private.pem 2048
-Create a matching public key
+- Create a matching public key
 openssl rsa -in private.pem -out public.pem -outform PEM -pubout
 
-Full JSON data:
+Full JSON data available:
 url, id, external_id, via (channel, source(from/to), rel) created_at, updated_at, type, subject, raw_subject, description, priority, status, recipient, requester_id, submitter_id, assignee_id, organization_id, group_id, collaborator_ids, follower_ids, email_cc_ids, forum_topic_id, problem_id, has_incidents, is_public, due_at, tags, custom_fields, satisfaction_rating, sharing_agreement_ids, fields, followup_ids, ticket_form_id, brand_id, allow_channelback
